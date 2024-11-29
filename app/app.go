@@ -7,6 +7,7 @@ import (
 	"order-service/internal/user"
 	userPort "order-service/internal/user/port"
 	"order-service/pkg/adapters/storage"
+	"order-service/pkg/postgres"
 
 	"gorm.io/gorm"
 )
@@ -31,7 +32,20 @@ func (a *app) Config() config.Config {
 }
 
 func (a *app) setDB() error {
-	// sets a.sb
+	db, err := postgres.NewPsqlGormConnection(postgres.DBConnOptions{
+		User:   a.cfg.DB.User,
+		Pass:   a.cfg.DB.Password,
+		Host:   a.cfg.DB.Host,
+		Port:   a.cfg.DB.Port,
+		DBName: a.cfg.DB.Database,
+		Schema: a.cfg.DB.Schema,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	a.db = db
 	return nil
 }
 
