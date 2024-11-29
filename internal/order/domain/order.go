@@ -21,9 +21,14 @@ type (
 	OrderUUID = uuid.UUID
 )
 
+func OrderUUIDFromString(s string) (OrderUUID, error) {
+	uid, err := uuid.Parse(s)
+	return OrderUUID(uid), err
+}
+
 type Order struct {
 	ID            OrderID
-	UUID          string
+	UUID          OrderUUID
 	CreatedAt     time.Time
 	DeletedAt     time.Time
 	SubmittedAt   time.Time
@@ -35,8 +40,11 @@ type Order struct {
 type OrderItemID uint
 
 type OrderItem struct {
-	ID OrderItemID
-	//
+	ID          OrderItemID
+	ProductName string
+	UnitPrice   uint
+	Quantity    uint
+	Description string
 }
 
 type OrderListFilters struct {

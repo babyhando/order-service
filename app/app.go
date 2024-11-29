@@ -4,7 +4,7 @@ import (
 	"order-service/config"
 	"order-service/internal/order"
 	orderPort "order-service/internal/order/port"
-	"order-service/pkg/addapters/storage"
+	"order-service/pkg/adapters/storage"
 
 	"gorm.io/gorm"
 )
