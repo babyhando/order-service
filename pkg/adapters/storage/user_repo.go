@@ -18,6 +18,6 @@ func NewUserRepo(db *gorm.DB) port.Repo {
 }
 
 func (r *userRepo) Create(ctx context.Context, userDomain domain.User) (domain.UserID, error) {
-	order := mapper.UserDomain2Storage(userDomain)
-	return domain.UserID(order.ID), r.db.Table("users").WithContext(ctx).Create(order).Error
+	user := mapper.UserDomain2Storage(userDomain)
+	return domain.UserID(user.ID), r.db.Table("users").WithContext(ctx).Create(user).Error
 }

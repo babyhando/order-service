@@ -4,12 +4,12 @@ option go_package = "order-service/api/pb";
 
 
 message UserSignUpRequest {
-    string first_name = 1 [json_name = "firstName"];
-    string last_name = 2 [json_name = "lastName"];
+    string firstName = 1 [json_name = "firstName"];
+    string lastName = 2 [json_name = "lastName"];
     string phone = 3 [json_name = "phone"];
 }
 
 message UserSignUpResponse {
-    string access_token = 1 [json_name = "accessToken"];
-    string refresh_token = 2 [json_name = "refreshToken"];
+    string accessToken = 1 [json_name = "accessToken"];
+    string refreshToken = 2 [json_name = "refreshToken"];
 }
