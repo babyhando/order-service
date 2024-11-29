@@ -1,11 +1,22 @@
 package domain
 
-type UserID uint
+import "time"
 
-type User struct {
-	UserID UserID
+type (
+	UserID uint
+	Phone  string
+)
+
+func PhoneFromString(p string) (Phone, error) {
+	// todo : phone regex check
+	return Phone(p), nil
 }
 
-func (u *User) Validate() error {
-	return nil
+type User struct {
+	ID        UserID
+	CreatedAt time.Time
+	DeletedAt time.Time
+	FirstName string
+	LastName  string
+	Phone     Phone
 }

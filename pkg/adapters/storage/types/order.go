@@ -1,13 +1,14 @@
 package types
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Order struct {
-	ID            uint
+	gorm.Model
 	UUID          string
-	CreatedAt     time.Time
-	DeletedAt     time.Time
-	UpdatedAt     time.Time
 	SubmittedAt   time.Time
 	UserID        uint
 	PaymentMethod uint8

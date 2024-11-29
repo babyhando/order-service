@@ -23,13 +23,13 @@ func NewOrderRepo(db *gorm.DB) orderPort.Repo {
 
 func (r *orderRepo) Create(ctx context.Context, order domain.Order) (domain.OrderID, error) {
 	o := mapper.OrderDomain2Storage(order)
-	return domain.OrderID(o.ID), r.db.Table("orders").Create(o).Error
+	return domain.OrderID(o.ID), r.db.Table("orders").WithContext(ctx).Create(o).Error
 }
 
 func (r *orderRepo) GetByID(ctx context.Context, orderID domain.OrderID) (*domain.Order, error) {
 	var order types.Order
 
-	err := r.db.Table("orders").Where("id = ?", orderID).First(&order).Error
+	err := r.db.Table("orders").WithContext(ctx).Where("id = ?", orderID).First(&order).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
