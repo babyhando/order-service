@@ -59,7 +59,7 @@ func NewApp(cfg config.Config) (App, error) {
 	}
 
 	a.orderService = order.NewService(nil, storage.NewOrderRepo(a.db))
-	a.userService = user.NewService(storage.NewUserRepo(a.db))
+	a.userService = user.NewService(storage.NewUserRepo(a.db, false, nil))
 
 	return a, nil
 }
