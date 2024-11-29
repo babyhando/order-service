@@ -49,3 +49,11 @@ func NewApp(cfg config.Config) (App, error) {
 
 	return a, nil
 }
+
+func NewMustApp(cfg config.Config) App {
+	app, err := NewApp(cfg)
+	if err != nil {
+		panic(err)
+	}
+	return app
+}

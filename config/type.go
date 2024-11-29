@@ -1,7 +1,8 @@
 package config
 
 type Config struct {
-	DB DBConfig `json:"db"`
+	DB     DBConfig     `json:"db"`
+	Server ServerConfig `json:"server"`
 }
 
 type DBConfig struct {
@@ -10,4 +11,11 @@ type DBConfig struct {
 	Database string `json:"database"`
 	User     string `json:"user"`
 	Password string `json:"password"`
+}
+
+type ServerConfig struct {
+	HttpPort          uint   `json:"httpPort"`
+	Secret            string `json:"secret"`
+	AuthExpMinute     uint   `json:"authExpMin"`
+	AuthRefreshMinute uint   `json:"authExpRefreshMin"`
 }

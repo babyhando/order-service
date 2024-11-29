@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
+	"order-service/api/handlers/http"
+	"order-service/app"
 	"order-service/config"
 	"os"
 )
@@ -18,5 +20,7 @@ func main() {
 
 	c := config.MustReadConfig(*configPath)
 
-	fmt.Println(c)
+	appContainer := app.NewMustApp(c)
+
+	log.Fatal(http.Run(appContainer, c.Server))
 }

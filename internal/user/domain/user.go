@@ -1,15 +1,18 @@
 package domain
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type (
 	UserID uint
 	Phone  string
 )
 
-func PhoneFromString(p string) (Phone, error) {
-	// todo : phone regex check
-	return Phone(p), nil
+func (p Phone) IsValid() bool {
+	// todo regex
+	return true
 }
 
 type User struct {
@@ -19,4 +22,11 @@ type User struct {
 	FirstName string
 	LastName  string
 	Phone     Phone
+}
+
+func (u *User) Validate() error {
+	if !u.Phone.IsValid() {
+		return errors.New("phone is not valid")
+	}
+	return nil
 }
