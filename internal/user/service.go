@@ -12,6 +12,7 @@ import (
 var (
 	ErrUserOnCreate           = errors.New("error on creating new user")
 	ErrUserCreationValidation = errors.New("validation failed")
+	ErrUserNotFound           = errors.New("user not found")
 )
 
 type service struct {
@@ -39,5 +40,14 @@ func (s *service) CreateUser(ctx context.Context, user domain.User) (domain.User
 }
 
 func (s *service) GetUserByID(ctx context.Context, userID domain.UserID) (*domain.User, error) {
-	panic("not implemented")
+	user, err := s.repo.GetByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.ID == 0 {
+		return nil, ErrUserNotFound
+	}
+
+	return user, nil
 }

@@ -30,6 +30,7 @@ func NewUserService(svc userPort.Service, authSecret string, expMin, refreshExpM
 var (
 	ErrUserCreationValidation = user.ErrUserCreationValidation
 	ErrUserOnCreate           = user.ErrUserOnCreate
+	ErrUserNotFound           = user.ErrUserNotFound
 )
 
 func (s *UserService) SignUp(ctx context.Context, req *pb.UserSignUpRequest) (*pb.UserSignUpResponse, error) {
@@ -67,5 +68,19 @@ func (s *UserService) SignUp(ctx context.Context, req *pb.UserSignUpRequest) (*p
 	return &pb.UserSignUpResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+	}, nil
+}
+
+func (s *UserService) GetByID(ctx context.Context, id uint) (*pb.User, error) {
+	user, err := s.svc.GetUserByID(ctx, domain.UserID(id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.User{
+		Id:        uint64(user.ID),
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Phone:     string(user.Phone),
 	}, nil
 }

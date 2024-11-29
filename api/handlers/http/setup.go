@@ -14,8 +14,12 @@ func Run(appContainer app.App, cfg config.ServerConfig) error {
 
 	api := router.Group("/api/v1")
 
-	api.Post("/sign-up", SignUp(service.NewUserService(appContainer.UserService(),
-		cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute)))
+	userService := service.NewUserService(appContainer.UserService(),
+		cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute)
+
+	api.Post("/sign-up", SignUp(userService))
+
+	api.Get("/users/:id", GetUserByID(userService))
 
 	return router.Listen(fmt.Sprintf(":%d", cfg.HttpPort))
 }

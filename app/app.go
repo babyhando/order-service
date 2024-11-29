@@ -1,22 +1,27 @@
 package app
 
 import (
+	"fmt"
 	"order-service/config"
 	"order-service/internal/order"
 	orderPort "order-service/internal/order/port"
 	"order-service/internal/user"
 	userPort "order-service/internal/user/port"
 	"order-service/pkg/adapters/storage"
+	"order-service/pkg/cache"
 	"order-service/pkg/postgres"
+
+	redisAdapter "order-service/pkg/adapters/cache"
 
 	"gorm.io/gorm"
 )
 
 type app struct {
-	db           *gorm.DB
-	cfg          config.Config
-	orderService orderPort.Service
-	userService  userPort.Service
+	db            *gorm.DB
+	cfg           config.Config
+	orderService  orderPort.Service
+	userService   userPort.Service
+	redisProvider cache.Provider
 }
 
 func (a *app) OrderService() orderPort.Service {
@@ -49,6 +54,10 @@ func (a *app) setDB() error {
 	return nil
 }
 
+func (a *app) setRedis() {
+	a.redisProvider = redisAdapter.NewRedisProvider(fmt.Sprintf("%s:%d", a.cfg.Redis.Host, a.cfg.Redis.Port))
+}
+
 func NewApp(cfg config.Config) (App, error) {
 	a := &app{
 		cfg: cfg,
@@ -58,8 +67,10 @@ func NewApp(cfg config.Config) (App, error) {
 		return nil, err
 	}
 
+	a.setRedis()
+
 	a.orderService = order.NewService(nil, storage.NewOrderRepo(a.db))
-	a.userService = user.NewService(storage.NewUserRepo(a.db, false, nil))
+	a.userService = user.NewService(storage.NewUserRepo(a.db, true, a.redisProvider))
 
 	return a, nil
 }

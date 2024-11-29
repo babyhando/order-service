@@ -47,13 +47,16 @@ func NewJsonObjectCacher[T any](p Provider) *ObjectCacher[T] {
 }
 
 func (c *ObjectCacher[T]) Get(ctx context.Context, key string) (T, error) {
-	var t T
+	t := new(T)
 	data, err := c.provider.Get(ctx, createKey(key))
-	if err != nil && !errors.Is(err, ErrCacheMiss) {
-		return t, err
+	if err != nil {
+		if errors.Is(err, ErrCacheMiss) {
+			return *t, nil
+		}
+		return *t, err
 	}
 
-	return t, c.unmarshal(data, &t)
+	return *t, c.unmarshal(data, &t)
 }
 
 func (c *ObjectCacher[T]) Del(ctx context.Context, key string) error {

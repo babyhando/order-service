@@ -13,3 +13,11 @@ message UserSignUpResponse {
     string accessToken = 1 [json_name = "accessToken"];
     string refreshToken = 2 [json_name = "refreshToken"];
 }
+
+
+message User {
+    uint64 id = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string phone = 4;
+}

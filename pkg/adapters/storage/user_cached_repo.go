@@ -42,7 +42,8 @@ func (r *userCachedRepo) GetByID(ctx context.Context, userID domain.UserID) (*do
 		return nil, err
 	}
 
-	if dUser != nil {
+	if dUser != nil && dUser.ID > 0 {
+		log.Println("reading user from cache , ID : ", userID)
 		return dUser, nil
 	}
 
