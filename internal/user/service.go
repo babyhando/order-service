@@ -39,13 +39,13 @@ func (s *service) CreateUser(ctx context.Context, user domain.User) (domain.User
 	return userID, nil
 }
 
-func (s *service) GetUserByID(ctx context.Context, userID domain.UserID) (*domain.User, error) {
-	user, err := s.repo.GetByID(ctx, userID)
+func (s *service) GetUserByFilter(ctx context.Context, filter *domain.UserFilter) (*domain.User, error) {
+	user, err := s.repo.GetByFilter(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
 
-	if user.ID == 0 {
+	if user == nil {
 		return nil, ErrUserNotFound
 	}
 

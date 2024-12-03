@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"order-service/api/pb"
 	"order-service/internal/user"
 	"order-service/internal/user/domain"
@@ -31,6 +32,7 @@ var (
 	ErrUserCreationValidation = user.ErrUserCreationValidation
 	ErrUserOnCreate           = user.ErrUserOnCreate
 	ErrUserNotFound           = user.ErrUserNotFound
+	ErrInvalidUserPassword    = errors.New("invalid password")
 )
 
 func (s *UserService) SignUp(ctx context.Context, req *pb.UserSignUpRequest) (*pb.UserSignUpResponse, error) {
@@ -38,23 +40,63 @@ func (s *UserService) SignUp(ctx context.Context, req *pb.UserSignUpRequest) (*p
 		FirstName: req.GetFirstName(),
 		LastName:  req.GetLastName(),
 		Phone:     domain.Phone(req.GetPhone()),
+		Password:  domain.NewPassword(req.GetPassword()),
 	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := jwt.CreateToken([]byte(s.authSecret), &jwt.UserClaims{
+	access, refresh, err := s.createTokens(uint(userID))
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.UserSignUpResponse{
+		AccessToken:  access,
+		RefreshToken: refresh,
+	}, nil
+}
+
+func (s *UserService) SignIn(ctx context.Context, req *pb.UserSignInRequest) (*pb.UserSignInResponse, error) {
+	user, err := s.svc.GetUserByFilter(ctx, &domain.UserFilter{
+		Phone: req.GetPhone(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, ErrUserNotFound
+	}
+
+	if !user.PasswordIsCorrect(req.GetPassword()) {
+		return nil, ErrInvalidUserPassword
+	}
+
+	access, refresh, err := s.createTokens(uint(user.ID))
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.UserSignInResponse{
+		AccessToken:  access,
+		RefreshToken: refresh,
+	}, nil
+}
+
+func (s *UserService) createTokens(userID uint) (access, refresh string, err error) {
+	access, err = jwt.CreateToken([]byte(s.authSecret), &jwt.UserClaims{
 		RegisteredClaims: jwt2.RegisteredClaims{
 			ExpiresAt: jwt2.NewNumericDate(time.AddMinutes(s.expMin, true)),
 		},
 		UserID: uint(userID),
 	})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	refreshToken, err := jwt.CreateToken([]byte(s.authSecret), &jwt.UserClaims{
+	refresh, err = jwt.CreateToken([]byte(s.authSecret), &jwt.UserClaims{
 		RegisteredClaims: jwt2.RegisteredClaims{
 			ExpiresAt: jwt2.NewNumericDate(time.AddMinutes(s.refreshExpMin, true)),
 		},
@@ -62,25 +104,8 @@ func (s *UserService) SignUp(ctx context.Context, req *pb.UserSignUpRequest) (*p
 	})
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	return &pb.UserSignUpResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
-}
-
-func (s *UserService) GetByID(ctx context.Context, id uint) (*pb.User, error) {
-	user, err := s.svc.GetUserByID(ctx, domain.UserID(id))
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.User{
-		Id:        uint64(user.ID),
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Phone:     string(user.Phone),
-	}, nil
+	return
 }

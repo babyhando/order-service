@@ -19,7 +19,7 @@ func Run(appContainer app.App, cfg config.ServerConfig) error {
 
 	api.Post("/sign-up", SignUp(userService))
 
-	api.Get("/users/:id", GetUserByID(userService))
+	api.Post("/sign-in", SignIn(userService))
 
 	return router.Listen(fmt.Sprintf(":%d", cfg.HttpPort))
 }

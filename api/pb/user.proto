@@ -7,6 +7,7 @@ message UserSignUpRequest {
     string firstName = 1 [json_name = "firstName"];
     string lastName = 2 [json_name = "lastName"];
     string phone = 3 [json_name = "phone"];
+    string password = 4;
 }
 
 message UserSignUpResponse {
@@ -14,6 +15,16 @@ message UserSignUpResponse {
     string refreshToken = 2 [json_name = "refreshToken"];
 }
 
+
+message UserSignInRequest {
+    string phone = 1;
+    string password = 2;
+}
+
+message UserSignInResponse {
+    string accessToken = 1 [json_name = "accessToken"];
+    string refreshToken = 2 [json_name = "refreshToken"];
+}
 
 message User {
     uint64 id = 1;

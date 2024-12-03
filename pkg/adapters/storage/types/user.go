@@ -9,4 +9,5 @@ type User struct {
 	FirstName string
 	LastName  string
 	Phone     string
+	Password  string
 }
