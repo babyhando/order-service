@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"order-service/config"
 	"order-service/internal/order"
@@ -14,6 +15,8 @@ import (
 	redisAdapter "order-service/pkg/adapters/cache"
 
 	"gorm.io/gorm"
+
+	appCtx "order-service/pkg/context"
 )
 
 type app struct {
@@ -24,12 +27,29 @@ type app struct {
 	redisProvider cache.Provider
 }
 
-func (a *app) OrderService() orderPort.Service {
-	return a.orderService
+func (a *app) DB() *gorm.DB {
+	return a.db
 }
 
-func (a *app) UserService() userPort.Service {
+func (a *app) OrderService(ctx context.Context) orderPort.Service {
+	db := appCtx.GetDB(ctx)
+	if db == nil {
+		return a.orderService
+	}
+
+	return a.orderServiceWithDB(db)
+}
+
+func (a *app) orderServiceWithDB(db *gorm.DB) orderPort.Service {
+	return order.NewService(a.userServiceWithDB(db), storage.NewOrderRepo(db))
+}
+
+func (a *app) UserService(ctx context.Context) userPort.Service {
 	return a.userService
+}
+
+func (a *app) userServiceWithDB(db *gorm.DB) userPort.Service {
+	return user.NewService(storage.NewUserRepo(db, true, a.redisProvider))
 }
 
 func (a *app) Config() config.Config {
@@ -69,8 +89,8 @@ func NewApp(cfg config.Config) (App, error) {
 
 	a.setRedis()
 
-	a.orderService = order.NewService(nil, storage.NewOrderRepo(a.db))
-	a.userService = user.NewService(storage.NewUserRepo(a.db, true, a.redisProvider))
+	a.userService = a.userServiceWithDB(a.db)
+	a.orderService = a.orderServiceWithDB(a.db)
 
 	return a, nil
 }

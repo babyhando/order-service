@@ -2,7 +2,6 @@ package http
 
 import (
 	"fmt"
-	"order-service/api/service"
 	"order-service/app"
 	"order-service/config"
 
@@ -14,12 +13,13 @@ func Run(appContainer app.App, cfg config.ServerConfig) error {
 
 	api := router.Group("/api/v1")
 
-	userService := service.NewUserService(appContainer.UserService(),
-		cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute)
-
-	api.Post("/sign-up", SignUp(userService))
-
-	api.Post("/sign-in", SignIn(userService))
+	registerAuthAPI(appContainer, cfg, api)
 
 	return router.Listen(fmt.Sprintf(":%d", cfg.HttpPort))
+}
+
+func registerAuthAPI(appContainer app.App, cfg config.ServerConfig, router fiber.Router) {
+	userSvcGetter := userServiceGetter(appContainer, cfg)
+	router.Post("/sign-up", SignUp(userSvcGetter), setTransaction(appContainer.DB()))
+	router.Post("/sign-in", SignIn(userSvcGetter), setTransaction(appContainer.DB()))
 }

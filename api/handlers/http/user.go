@@ -8,8 +8,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SignUp(svc *service.UserService) fiber.Handler {
+func SignUp(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		svc := svcGetter(c.UserContext())
 		var req pb.UserSignUpRequest
 		if err := c.BodyParser(&req); err != nil {
 			return fiber.ErrBadRequest
@@ -28,8 +29,9 @@ func SignUp(svc *service.UserService) fiber.Handler {
 	}
 }
 
-func SignIn(svc *service.UserService) fiber.Handler {
+func SignIn(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		svc := svcGetter(c.UserContext())
 		var req pb.UserSignInRequest
 		if err := c.BodyParser(&req); err != nil {
 			return fiber.ErrBadRequest

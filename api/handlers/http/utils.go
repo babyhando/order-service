@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"order-service/pkg/jwt"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,3 +17,5 @@ func userClaims(ctx *fiber.Ctx) *jwt.UserClaims {
 	}
 	return nil
 }
+
+type ServiceGetter[T any] func(context.Context) T

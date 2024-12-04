@@ -3,8 +3,11 @@ package http
 import (
 	"order-service/pkg/jwt"
 
+	"order-service/pkg/context"
+
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func newAuthMiddleware(secret []byte) fiber.Handler {
@@ -24,4 +27,29 @@ func newAuthMiddleware(secret []byte) fiber.Handler {
 		},
 		AuthScheme: "Bearer",
 	})
+}
+
+func setUserContext(c *fiber.Ctx) error {
+	c.SetUserContext(context.NewAppContext(c.UserContext()))
+	return c.Next()
+}
+
+func setTransaction(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		tx := db.Begin()
+
+		context.SetDB(c.UserContext(), tx, true)
+
+		err := c.Next()
+
+		if c.Response().StatusCode() >= 300 {
+			return context.Rollback(c.UserContext())
+		}
+
+		if err := context.CommitOrRollback(c.UserContext(), true); err != nil {
+			return err
+		}
+
+		return err
+	}
 }
