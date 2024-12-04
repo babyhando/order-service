@@ -2,7 +2,8 @@ package port
 
 import (
 	"context"
-	"order-service/internal/user/domain"
+
+	"github.com/babyhando/order-service/internal/user/domain"
 )
 
 type Repo interface {

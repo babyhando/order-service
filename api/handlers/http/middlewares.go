@@ -1,9 +1,9 @@
 package http
 
 import (
-	"order-service/pkg/jwt"
+	"github.com/babyhando/order-service/pkg/jwt"
 
-	"order-service/pkg/context"
+	"github.com/babyhando/order-service/pkg/context"
 
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"

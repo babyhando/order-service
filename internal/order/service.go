@@ -2,10 +2,11 @@ package order
 
 import (
 	"context"
-	"order-service/internal/order/domain"
-	"order-service/internal/order/port"
-	userPort "order-service/internal/user/port"
 	"time"
+
+	"github.com/babyhando/order-service/internal/order/domain"
+	"github.com/babyhando/order-service/internal/order/port"
+	userPort "github.com/babyhando/order-service/internal/user/port"
 )
 
 type service struct {

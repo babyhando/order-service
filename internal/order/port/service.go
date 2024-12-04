@@ -2,8 +2,9 @@ package port
 
 import (
 	"context"
-	"order-service/internal/order/domain"
 	"time"
+
+	"github.com/babyhando/order-service/internal/order/domain"
 )
 
 type Service interface {

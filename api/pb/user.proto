@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "order-service/api/pb";
+option go_package = "github.com/babyhando/order-service/api/pb";
 
 
 message UserSignUpRequest {

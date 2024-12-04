@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"errors"
-	"order-service/api/pb"
-	"order-service/internal/user"
-	"order-service/internal/user/domain"
-	userPort "order-service/internal/user/port"
-	"order-service/pkg/jwt"
-	"order-service/pkg/time"
+
+	"github.com/babyhando/order-service/api/pb"
+	"github.com/babyhando/order-service/internal/user"
+	"github.com/babyhando/order-service/internal/user/domain"
+	userPort "github.com/babyhando/order-service/internal/user/port"
+	"github.com/babyhando/order-service/pkg/jwt"
+	"github.com/babyhando/order-service/pkg/time"
 
 	jwt2 "github.com/golang-jwt/jwt/v5"
 )

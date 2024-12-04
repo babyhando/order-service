@@ -2,9 +2,10 @@ package http
 
 import (
 	"context"
-	"order-service/api/service"
-	"order-service/app"
-	"order-service/config"
+
+	"github.com/babyhando/order-service/api/service"
+	"github.com/babyhando/order-service/app"
+	"github.com/babyhando/order-service/config"
 )
 
 func userServiceGetter(appContainer app.App, cfg config.ServerConfig) ServiceGetter[*service.UserService] {

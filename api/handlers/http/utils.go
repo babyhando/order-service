@@ -2,7 +2,8 @@ package http
 
 import (
 	"context"
-	"order-service/pkg/jwt"
+
+	"github.com/babyhando/order-service/pkg/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	jwt2 "github.com/golang-jwt/jwt/v5"

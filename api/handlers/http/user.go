@@ -2,8 +2,9 @@ package http
 
 import (
 	"errors"
-	"order-service/api/pb"
-	"order-service/api/service"
+
+	"github.com/babyhando/order-service/api/pb"
+	"github.com/babyhando/order-service/api/service"
 
 	"github.com/gofiber/fiber/v2"
 )

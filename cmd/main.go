@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"log"
-	"order-service/api/handlers/http"
-	"order-service/app"
-	"order-service/config"
 	"os"
+
+	"github.com/babyhando/order-service/api/handlers/http"
+	"github.com/babyhando/order-service/app"
+	"github.com/babyhando/order-service/config"
 )
 
 var configPath = flag.String("config", "config.json", "service configuration file")

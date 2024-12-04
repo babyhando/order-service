@@ -5,8 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"order-service/internal/user/domain"
-	"order-service/internal/user/port"
+
+	"github.com/babyhando/order-service/internal/user/domain"
+	"github.com/babyhando/order-service/internal/user/port"
 )
 
 var (

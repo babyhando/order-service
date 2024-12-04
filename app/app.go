@@ -3,20 +3,21 @@ package app
 import (
 	"context"
 	"fmt"
-	"order-service/config"
-	"order-service/internal/order"
-	orderPort "order-service/internal/order/port"
-	"order-service/internal/user"
-	userPort "order-service/internal/user/port"
-	"order-service/pkg/adapters/storage"
-	"order-service/pkg/cache"
-	"order-service/pkg/postgres"
 
-	redisAdapter "order-service/pkg/adapters/cache"
+	"github.com/babyhando/order-service/config"
+	"github.com/babyhando/order-service/internal/order"
+	orderPort "github.com/babyhando/order-service/internal/order/port"
+	"github.com/babyhando/order-service/internal/user"
+	userPort "github.com/babyhando/order-service/internal/user/port"
+	"github.com/babyhando/order-service/pkg/adapters/storage"
+	"github.com/babyhando/order-service/pkg/cache"
+	"github.com/babyhando/order-service/pkg/postgres"
+
+	redisAdapter "github.com/babyhando/order-service/pkg/adapters/cache"
 
 	"gorm.io/gorm"
 
-	appCtx "order-service/pkg/context"
+	appCtx "github.com/babyhando/order-service/pkg/context"
 )
 
 type app struct {

@@ -1,4 +1,4 @@
-module order-service
+module github.com/babyhando/order-service
 
 go 1.23.3
 

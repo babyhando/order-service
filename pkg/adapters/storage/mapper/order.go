@@ -1,9 +1,9 @@
 package mapper
 
 import (
-	"order-service/internal/order/domain"
-	userDomain "order-service/internal/user/domain"
-	"order-service/pkg/adapters/storage/types"
+	"github.com/babyhando/order-service/internal/order/domain"
+	userDomain "github.com/babyhando/order-service/internal/user/domain"
+	"github.com/babyhando/order-service/pkg/adapters/storage/types"
 
 	"gorm.io/gorm"
 )

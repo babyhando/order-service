@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"order-service/config"
-	orderPort "order-service/internal/order/port"
-	userPort "order-service/internal/user/port"
+
+	"github.com/babyhando/order-service/config"
+	orderPort "github.com/babyhando/order-service/internal/order/port"
+	userPort "github.com/babyhando/order-service/internal/user/port"
 
 	"gorm.io/gorm"
 )

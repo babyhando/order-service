@@ -4,9 +4,10 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
-	"order-service/pkg/conv"
 	"strings"
 	"time"
+
+	"github.com/babyhando/order-service/pkg/conv"
 )
 
 type (

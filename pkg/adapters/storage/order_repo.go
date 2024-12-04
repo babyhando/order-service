@@ -3,10 +3,11 @@ package storage
 import (
 	"context"
 	"errors"
-	"order-service/internal/order/domain"
-	orderPort "order-service/internal/order/port"
-	"order-service/pkg/adapters/storage/mapper"
-	"order-service/pkg/adapters/storage/types"
+
+	"github.com/babyhando/order-service/internal/order/domain"
+	orderPort "github.com/babyhando/order-service/internal/order/port"
+	"github.com/babyhando/order-service/pkg/adapters/storage/mapper"
+	"github.com/babyhando/order-service/pkg/adapters/storage/types"
 
 	"gorm.io/gorm"
 )

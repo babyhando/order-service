@@ -2,8 +2,9 @@ package http
 
 import (
 	"fmt"
-	"order-service/app"
-	"order-service/config"
+
+	"github.com/babyhando/order-service/app"
+	"github.com/babyhando/order-service/config"
 
 	"github.com/gofiber/fiber/v2"
 )

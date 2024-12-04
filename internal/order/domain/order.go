@@ -1,8 +1,9 @@
 package domain
 
 import (
-	userDomain "order-service/internal/user/domain"
 	"time"
+
+	userDomain "github.com/babyhando/order-service/internal/user/domain"
 
 	"github.com/google/uuid"
 )
