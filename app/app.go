@@ -35,6 +35,9 @@ func (a *app) DB() *gorm.DB {
 func (a *app) OrderService(ctx context.Context) orderPort.Service {
 	db := appCtx.GetDB(ctx)
 	if db == nil {
+		if a.orderService == nil {
+			a.orderService = a.orderServiceWithDB(a.db)
+		}
 		return a.orderService
 	}
 
@@ -46,7 +49,15 @@ func (a *app) orderServiceWithDB(db *gorm.DB) orderPort.Service {
 }
 
 func (a *app) UserService(ctx context.Context) userPort.Service {
-	return a.userService
+	db := appCtx.GetDB(ctx)
+	if db == nil {
+		if a.userService == nil {
+			a.userService = a.userServiceWithDB(a.db)
+		}
+		return a.userService
+	}
+
+	return a.userServiceWithDB(db)
 }
 
 func (a *app) userServiceWithDB(db *gorm.DB) userPort.Service {
@@ -89,9 +100,6 @@ func NewApp(cfg config.Config) (App, error) {
 	}
 
 	a.setRedis()
-
-	a.userService = a.userServiceWithDB(a.db)
-	a.orderService = a.orderServiceWithDB(a.db)
 
 	return a, nil
 }
