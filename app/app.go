@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/babyhando/order-service/config"
+	"github.com/babyhando/order-service/internal/common"
+	notifPort "github.com/babyhando/order-service/internal/notification/port"
 	"github.com/babyhando/order-service/internal/order"
 	orderPort "github.com/babyhando/order-service/internal/order/port"
 	"github.com/babyhando/order-service/internal/user"
@@ -12,6 +14,7 @@ import (
 	"github.com/babyhando/order-service/pkg/adapters/storage"
 	"github.com/babyhando/order-service/pkg/cache"
 	"github.com/babyhando/order-service/pkg/postgres"
+	"github.com/go-co-op/gocron/v2"
 
 	redisAdapter "github.com/babyhando/order-service/pkg/adapters/cache"
 
@@ -21,11 +24,12 @@ import (
 )
 
 type app struct {
-	db            *gorm.DB
-	cfg           config.Config
-	orderService  orderPort.Service
-	userService   userPort.Service
-	redisProvider cache.Provider
+	db                  *gorm.DB
+	cfg                 config.Config
+	orderService        orderPort.Service
+	userService         userPort.Service
+	notificationService notifPort.Service
+	redisProvider       cache.Provider
 }
 
 func (a *app) DB() *gorm.DB {
@@ -62,6 +66,10 @@ func (a *app) UserService(ctx context.Context) userPort.Service {
 
 func (a *app) userServiceWithDB(db *gorm.DB) userPort.Service {
 	return user.NewService(storage.NewUserRepo(db, true, a.redisProvider))
+}
+
+func (a *app) notifServiceWithDB(db *gorm.DB) notifPort.Service {
+	return nil
 }
 
 func (a *app) Config() config.Config {
@@ -101,7 +109,7 @@ func NewApp(cfg config.Config) (App, error) {
 
 	a.setRedis()
 
-	return a, nil
+	return a, a.registerOutboxHandlers()
 }
 
 func NewMustApp(cfg config.Config) App {
@@ -110,4 +118,17 @@ func NewMustApp(cfg config.Config) App {
 		panic(err)
 	}
 	return app
+}
+
+func (a *app) registerOutboxHandlers() error {
+	scheduler, err := gocron.NewScheduler()
+	if err != nil {
+		return err
+	}
+
+	common.RegisterOutboxRunner(a.notifServiceWithDB(a.db), scheduler)
+
+	scheduler.Start()
+
+	return nil
 }
