@@ -12,7 +12,7 @@ import (
 func Run(appContainer app.App, cfg config.ServerConfig) error {
 	router := fiber.New()
 
-	api := router.Group("/api/v1")
+	api := router.Group("/api/v1", setUserContext)
 
 	registerAuthAPI(appContainer, cfg, api)
 
@@ -21,6 +21,6 @@ func Run(appContainer app.App, cfg config.ServerConfig) error {
 
 func registerAuthAPI(appContainer app.App, cfg config.ServerConfig, router fiber.Router) {
 	userSvcGetter := userServiceGetter(appContainer, cfg)
-	router.Post("/sign-up", SignUp(userSvcGetter), setTransaction(appContainer.DB()))
-	router.Post("/sign-in", SignIn(userSvcGetter), setTransaction(appContainer.DB()))
+	router.Post("/sign-up", setTransaction(appContainer.DB()), SignUp(userSvcGetter))
+	router.Post("/sign-in", setTransaction(appContainer.DB()), SignIn(userSvcGetter))
 }

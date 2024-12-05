@@ -1,6 +1,8 @@
 package http
 
 import (
+	"fmt"
+
 	"github.com/babyhando/order-service/pkg/jwt"
 
 	"github.com/babyhando/order-service/pkg/context"
@@ -14,7 +16,7 @@ func newAuthMiddleware(secret []byte) fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey:  jwtware.SigningKey{Key: secret},
 		Claims:      &jwt.UserClaims{},
-		TokenLookup: "header",
+		TokenLookup: "header:Authorization",
 		SuccessHandler: func(ctx *fiber.Ctx) error {
 			userClaims := userClaims(ctx)
 			if userClaims == nil {
@@ -42,6 +44,7 @@ func setTransaction(db *gorm.DB) fiber.Handler {
 
 		err := c.Next()
 
+		fmt.Println("response status : ", c.Response().StatusCode())
 		if c.Response().StatusCode() >= 300 {
 			return context.Rollback(c.UserContext())
 		}

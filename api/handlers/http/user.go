@@ -2,6 +2,7 @@ package http
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/babyhando/order-service/api/pb"
 	"github.com/babyhando/order-service/api/service"
@@ -17,7 +18,7 @@ func SignUp(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 			return fiber.ErrBadRequest
 		}
 
-		resp, err := svc.SignUp(c.UserContext(), &req)
+		_, err := svc.SignUp(c.UserContext(), &req)
 		if err != nil {
 			if errors.Is(err, service.ErrUserCreationValidation) {
 				return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -26,7 +27,10 @@ func SignUp(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
-		return c.JSON(resp)
+		// return c.JSON(resp)
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "internal error",
+		})
 	}
 }
 

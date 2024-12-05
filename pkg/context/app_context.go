@@ -13,7 +13,7 @@ type appContext struct {
 	shouldCommit bool
 }
 
-type AppContextOpt func(*appContext) *appContext
+type AppContextOpt func(*appContext) *appContext // option pattern
 
 func WithDB(db *gorm.DB, shouldCommit bool) AppContextOpt {
 	return func(ac *appContext) *appContext {
@@ -21,6 +21,15 @@ func WithDB(db *gorm.DB, shouldCommit bool) AppContextOpt {
 		ac.shouldCommit = shouldCommit
 		return ac
 	}
+}
+
+func NewAppContext(parent context.Context, opts ...AppContextOpt) context.Context {
+	ctx := &appContext{Context: parent}
+	for _, opt := range opts {
+		ctx = opt(ctx)
+	}
+
+	return ctx
 }
 
 func SetDB(ctx context.Context, db *gorm.DB, shouldCommit bool) {
@@ -40,15 +49,6 @@ func GetDB(ctx context.Context) *gorm.DB {
 	}
 
 	return appCtx.db
-}
-
-func NewAppContext(parent context.Context, opts ...AppContextOpt) context.Context {
-	ctx := &appContext{Context: parent}
-	for _, opt := range opts {
-		ctx = opt(ctx)
-	}
-
-	return ctx
 }
 
 func Commit(ctx context.Context) error {
