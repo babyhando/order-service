@@ -3,12 +3,26 @@ package http
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/babyhando/order-service/api/pb"
 	"github.com/babyhando/order-service/api/service"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+func SendSignInOTP(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		svc := svcGetter(c.UserContext())
+		phone := strings.TrimSpace(c.Query("phone"))
+
+		if err := svc.SendSignInOTP(c.UserContext(), phone); err != nil {
+			return err
+		}
+
+		return nil
+	}
+}
 
 func SignUp(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 	return func(c *fiber.Ctx) error {

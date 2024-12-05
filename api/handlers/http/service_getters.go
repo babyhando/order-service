@@ -12,6 +12,6 @@ import (
 func userServiceGetter(appContainer app.App, cfg config.ServerConfig) ServiceGetter[*service.UserService] {
 	return func(ctx context.Context) *service.UserService {
 		return service.NewUserService(appContainer.UserService(ctx),
-			cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute)
+			cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute, appContainer.NotificationService(ctx))
 	}
 }

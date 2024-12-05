@@ -22,5 +22,6 @@ func Run(appContainer app.App, cfg config.ServerConfig) error {
 func registerAuthAPI(appContainer app.App, cfg config.ServerConfig, router fiber.Router) {
 	userSvcGetter := userServiceGetter(appContainer, cfg)
 	router.Post("/sign-up", setTransaction(appContainer.DB()), SignUp(userSvcGetter))
+	router.Get("/send-otp", setTransaction(appContainer.DB()), SendSignInOTP(userSvcGetter))
 	router.Post("/sign-in", setTransaction(appContainer.DB()), SignIn(userSvcGetter))
 }

@@ -25,11 +25,13 @@ const (
 )
 
 type Notification struct {
-	ID        NotifID
-	CreatedAt time.Time
-	UserID    userDomain.UserID
-	Type      NotifType
-	Content   string
+	ID            NotifID
+	CreatedAt     time.Time
+	UserID        userDomain.UserID
+	Type          NotifType
+	Content       string
+	ForValidation bool
+	TTL           time.Duration
 }
 
 func (n *Notification) Normalize() {
@@ -45,12 +47,14 @@ func (n *Notification) Validate() error {
 	return nil
 }
 
-func NewNotification(userID userDomain.UserID, content string, notifType NotifType) *Notification {
+func NewNotification(userID userDomain.UserID, content string, notifType NotifType, forValidation bool, ttl time.Duration) *Notification {
 	return &Notification{
-		UserID:    userID,
-		Type:      notifType,
-		Content:   content,
-		CreatedAt: time.Now(),
+		UserID:        userID,
+		Type:          notifType,
+		Content:       content,
+		CreatedAt:     time.Now(),
+		ForValidation: forValidation,
+		TTL:           ttl,
 	}
 }
 

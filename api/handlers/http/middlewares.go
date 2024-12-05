@@ -1,8 +1,6 @@
 package http
 
 import (
-	"fmt"
-
 	"github.com/babyhando/order-service/pkg/jwt"
 
 	"github.com/babyhando/order-service/pkg/context"
@@ -44,7 +42,6 @@ func setTransaction(db *gorm.DB) fiber.Handler {
 
 		err := c.Next()
 
-		fmt.Println("response status : ", c.Response().StatusCode())
 		if c.Response().StatusCode() >= 300 {
 			return context.Rollback(c.UserContext())
 		}

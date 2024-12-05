@@ -85,5 +85,14 @@ func (s *service) Interval() time.Duration {
 }
 
 func (s *service) Query(ctx context.Context) ([]domain.NotificationOutbox, error) {
-	panic("not implemented")
+	return s.repo.QueryOutboxes(ctx, 100, common.OutboxStatusCreated)
+}
+
+func (s *service) CheckUserNotifValue(ctx context.Context, userID userDomain.UserID, val string) (bool, error) {
+	expected, err := s.repo.GetUserNotifValue(ctx, userID)
+	if err != nil {
+		return false, err
+	}
+
+	return expected == val, nil
 }

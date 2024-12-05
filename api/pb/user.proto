@@ -19,6 +19,7 @@ message UserSignUpResponse {
 message UserSignInRequest {
     string phone = 1;
     string password = 2;
+    string otp = 3;
 }
 
 message UserSignInResponse {

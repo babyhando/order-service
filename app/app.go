@@ -6,6 +6,7 @@ import (
 
 	"github.com/babyhando/order-service/config"
 	"github.com/babyhando/order-service/internal/common"
+	"github.com/babyhando/order-service/internal/notification"
 	notifPort "github.com/babyhando/order-service/internal/notification/port"
 	"github.com/babyhando/order-service/internal/order"
 	orderPort "github.com/babyhando/order-service/internal/order/port"
@@ -69,7 +70,20 @@ func (a *app) userServiceWithDB(db *gorm.DB) userPort.Service {
 }
 
 func (a *app) notifServiceWithDB(db *gorm.DB) notifPort.Service {
-	return nil
+	return notification.NewService(storage.NewNotificationRepo(db, a.redisProvider),
+		user.NewService(storage.NewUserRepo(db, true, a.redisProvider)), storage.NewOutboxRepo(db))
+}
+
+func (a *app) NotificationService(ctx context.Context) notifPort.Service {
+	db := appCtx.GetDB(ctx)
+	if db == nil {
+		if a.notificationService == nil {
+			a.notificationService = a.notifServiceWithDB(a.db)
+		}
+		return a.notificationService
+	}
+
+	return a.notifServiceWithDB(db)
 }
 
 func (a *app) Config() config.Config {
