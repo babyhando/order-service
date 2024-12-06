@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/babyhando/order-service/pkg/jwt"
+	"github.com/babyhando/order-service/pkg/logger"
 
 	"github.com/babyhando/order-service/pkg/context"
 
@@ -20,6 +21,10 @@ func newAuthMiddleware(secret []byte) fiber.Handler {
 			if userClaims == nil {
 				return fiber.ErrUnauthorized
 			}
+
+			logger := context.GetLogger(ctx.UserContext())
+			context.SetLogger(ctx.UserContext(), logger.With("user_id", userClaims.UserID))
+
 			return ctx.Next()
 		},
 		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
@@ -30,7 +35,7 @@ func newAuthMiddleware(secret []byte) fiber.Handler {
 }
 
 func setUserContext(c *fiber.Ctx) error {
-	c.SetUserContext(context.NewAppContext(c.UserContext()))
+	c.SetUserContext(context.NewAppContext(c.UserContext(), context.WithLogger(logger.NewLogger())))
 	return c.Next()
 }
 

@@ -24,4 +24,5 @@ func registerAuthAPI(appContainer app.App, cfg config.ServerConfig, router fiber
 	router.Post("/sign-up", setTransaction(appContainer.DB()), SignUp(userSvcGetter))
 	router.Get("/send-otp", setTransaction(appContainer.DB()), SendSignInOTP(userSvcGetter))
 	router.Post("/sign-in", setTransaction(appContainer.DB()), SignIn(userSvcGetter))
+	router.Get("/test", newAuthMiddleware([]byte(cfg.Secret)), TestHandler)
 }

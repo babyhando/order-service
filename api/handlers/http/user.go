@@ -4,9 +4,11 @@ import (
 	"errors"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/babyhando/order-service/api/pb"
 	"github.com/babyhando/order-service/api/service"
+	"github.com/babyhando/order-service/pkg/context"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -71,4 +73,12 @@ func SignIn(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 
 		return c.JSON(resp)
 	}
+}
+
+func TestHandler(ctx *fiber.Ctx) error {
+	logger := context.GetLogger(ctx.UserContext())
+
+	logger.Info("from test handler", "time", time.Now().Format(time.DateTime))
+
+	return nil
 }
